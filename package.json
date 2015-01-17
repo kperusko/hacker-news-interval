@@ -1,0 +1,21 @@
+{
+  "name": "hackerati-news-interval-service",
+  "description": "REST service for Hackerati News Interval app",
+  "private": "true",
+  "homepage": "http://github.com/kperusko/hackerati-news-interval-service/",
+  "author": "Kristijan Perusko <kristijan.perusko@yahoo.com>",
+  "dependencies": {
+    "body-parser": "^1.10.1",
+    "express": "~4.11.0",
+    "express-session": "^1.10.1",
+    "mongoose": "^3.8.21",
+    "morgan": "^1.5.1",
+    "passport": "^0.2.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kperusko/hackerati-news-interval-service"
+  },
+  "version": "0.1.0",
+  "license": "MIT"
+}
