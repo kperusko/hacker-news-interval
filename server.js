@@ -1,17 +1,22 @@
 'use strict';
 
 var express = require('express');
+var logger = require('morgan');
+var bodyParser = require('body-parser');
+var config = require('./config');
+
 var app = express();
 
-var port = process.env.PORT || 8000;
+app.use(bodyParser.json());
+app.use(logger('dev'));
 
-var router = express.Router();
-
-router.get('/', function(req, res) {
-	res.json({ message: 'Yeeeez' });
+// handle CORS requests
+app.use(function(req, res, next) {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type, Authorization');
+  next();
 });
 
-app.use('/api', router);
-
-app.listen(port);
-console.log('Server is listening on port ' + port);
+app.listen(config.http.port);
+console.log('Listening on port ' + config.http.port);
