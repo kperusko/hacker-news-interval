@@ -18,5 +18,8 @@ app.use(function(req, res, next) {
   next();
 });
 
+var routes = require('./routes/api')(app, express);
+app.use('/api', routes);
+
 app.listen(config.http.port);
 console.log('Listening on port ' + config.http.port);
