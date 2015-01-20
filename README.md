@@ -1,2 +1,2 @@
-# hackerati-news-interval-service
-REST service for Hackerati News Interval app
+# hacker-news-interval-service
+REST service for Hacker News Interval app
