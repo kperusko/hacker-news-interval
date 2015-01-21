@@ -10,7 +10,6 @@ module.exports.getStories = function(req, res, next){
 };
 
 module.exports.getStory = function(req, res, next){
-	
     Story.findOne({ _id: req.params.story_id }, function(err, story) {					
 		if (err) return next(err);
 		if (!story) return next(); // return 404 if story doesn't exist
@@ -22,7 +21,7 @@ module.exports.getStory = function(req, res, next){
 module.exports.updateStory = function(req, res, next) {
 	Story.findById(req.params.story_id, function(err, story) {
         if (err) return next(err);
-
+		
 		var isNew = false;
 		if (!story) {
 			story = new Story();	

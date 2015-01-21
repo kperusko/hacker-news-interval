@@ -20,6 +20,15 @@ module.exports.addSnapshot = function(req, res, next){
 	})
 };
 
+module.exports.getSnapshot = function(req, res, next){	
+	Snapshot.findOne({ _id: req.params.snapshot_id }, function(err, snapshot) {                  
+        if (err) return next(err);
+        if (!snapshot) return next(); // return 404 if snapshot doesn't exist
+        
+        res.json(snapshot);
+    });
+};
+
 module.exports.updateSnapshot = function(req, res, next){
 	Snapshot.findById(req.params.snapshot_id, function(err, snapshot) {
         if (err) return next(err);

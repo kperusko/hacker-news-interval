@@ -22,7 +22,7 @@ app.use(function(req, res, next) {
 	next();
 });
 
-var apiRoutes = require('./routes/api')(app, express);
+var apiRoutes = require('./routes/api')(express);
 app.use('/api', apiRoutes);
 
 // connection errors
