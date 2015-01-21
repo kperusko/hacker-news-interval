@@ -10,8 +10,8 @@ mongoose.connect(config.db);
 
 var app = express();
 
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(logger('dev'));
 
 // handle CORS requests
@@ -27,7 +27,6 @@ app.use('/api', apiRoutes);
 
 // connection errors
 mongoose.connection.on('error',  console.error.bind(console, 'connection error:'));
-
 
 // 404 - catch and forward to error handler
 app.use(function(req, res, next) {
