@@ -6,7 +6,7 @@ var Score = require('./score');
 var Story = new mongoose.Schema({
 	_id: Number,
 	title : { type: String, required: true }, // title of the story 
-	url: { type: String, required: true, validate: [ validators.isURL() ] }, // URL it points to
+	url: { type: String, validate: [ validators.isURL() ] }, // URL it points to; not required for polls
 	scores : { type: [ Score.schema ], required: true }, // scores that story had at specific intervals
 	by: { type: String, require: true }, // user that submitted story
 	created: { type: Date, required: true} // date when the story was created

@@ -10,8 +10,9 @@ module.exports.getSnapshots = function(req, res, next){
 
 module.exports.addSnapshot = function(req, res, next){
 	var snapshot = new Snapshot();
-	
+
 	snapshot.time = req.body.time;
+	snapshot.new_items = req.body.new_items;
 
 	snapshot.save(function(err) {
 		if (err) return next(err);
@@ -35,11 +36,12 @@ module.exports.updateSnapshot = function(req, res, next){
 
 		if (snapshot) {
 			snapshot.time = req.body.time;
+			snapshot.new_items = req.body.new_items;
 
 			// Save the story and check for errors				
 			snapshot.save(function(err) {
 				if (err) return next(err);
-				res.json(story)
+				res.json(snapshot)
 			});
 		}else{
 			next(); // 404 
