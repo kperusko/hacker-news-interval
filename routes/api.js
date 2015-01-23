@@ -13,6 +13,9 @@ module.exports = function(express) {
 		.put(story.updateStory)
 		.patch(story.updateScore);
 
+	router.route('/story/ids')
+	    .get(story.getStoryIds);
+
 	// SNAPSHOT
     router.route('/snapshots')
 	    .get(snapshot.getSnapshots)

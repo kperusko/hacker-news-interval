@@ -9,6 +9,17 @@ module.exports.getStories = function(req, res, next){
 	});
 };
 
+module.exports.getStoryIds = function(req, res, next){           
+    Story.find({}, "_id", function(err, stories) {
+        if (err) return next(err);
+		
+		ids = stories.map(function(val){
+			return val["_id"];
+		})
+        res.json(ids);
+    });
+};
+
 module.exports.getStory = function(req, res, next){
     Story.findOne({ _id: req.params.story_id }, function(err, story) {					
 		if (err) return next(err);
@@ -56,7 +67,9 @@ module.exports.updateScore = function(req, res, next){
             err.status = 422;
             next(err);
 		}else{
-			story.scores.push(req.body.score);
+			score = req.body.value;
+			
+			story.scores.push(score);
 
 			story.save(function(err) {
 				if (err) return next(err);
