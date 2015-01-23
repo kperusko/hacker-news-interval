@@ -1,10 +1,10 @@
 'use strict';
 
 var paths = {
-  js: ['*.js', 'test/**/*.js', '!test/coverage/**', 'packages/**/*.js', '!packages/**/node_modules/**', '!packages/contrib/**/*.js', '!packages/contrib/**/node_modules/**'],
+  js: ['*.js', 'test/**/*.js', '!test/coverage/**', '**/*.js', '!node_modules/**'],
 };
 
-module.exports = function(grunt) {
+module.exports = function (grunt) {
 
   if (process.env.NODE_ENV !== 'production') {
     require('time-grunt')(grunt);
@@ -12,7 +12,7 @@ module.exports = function(grunt) {
 
   // Project Configuration
   grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),	  
+    pkg: grunt.file.readJSON('package.json'),
     watch: {
       js: {
         files: paths.js,
@@ -27,6 +27,21 @@ module.exports = function(grunt) {
         src: paths.js,
         options: {
           jshintrc: true
+        }
+      }
+    },
+    jsbeautifier: {
+      modify: {
+        src: paths.js,
+        options: {
+          config: '.jsbeautifyrc'
+        }
+      },
+      verify: {
+        src: ['Gruntfile.js', '*.js', ],
+        options: {
+          mode: 'VERIFY_ONLY',
+          config: '.jsbeautifyrc'
         }
       }
     },
@@ -52,32 +67,44 @@ module.exports = function(grunt) {
     env: {
       test: {
         NODE_ENV: 'test',
-		src: '.env'
+        src: '.env'
       },
-	  build: {
-		NODE_ENV: 'production'
-	  }
+      build: {
+        NODE_ENV: 'production'
+      }
     }
   });
 
-  //Load NPM tasks
+  // load NPM tasks
   require('load-grunt-tasks')(grunt);
 
   /**
-   * Default Task
+   * default Task
    */
   grunt.hook.push('concurrent', 9999);
-  if (process.env.NODE_ENV === 'production') {	  
+  if (process.env.NODE_ENV === 'production') {
     grunt.hook.push('uglify', 200);
   } else {
-    grunt.hook.push('jshint', -200);	  
+    grunt.hook.push('jshint', -200);
   }
 
-  //Default task.
+  // default task.
   grunt.registerTask('default', ['hook']);
 
-  //Test task.
+  // test task.
   grunt.registerTask('test', ['env:test', 'mochaTest']);
+
+  // 
+  grunt.registerTask('clean', [
+    'jsbeautifier:modify',
+    'jshint'
+  ]);
+
+  // verify to check that code is formatted and passes JSHint:	
+  grunt.registerTask('verify', [
+    'jsbeautifier:verify',
+    'jshint'
+  ]);
 
   // Heroku deployment
   grunt.registerTask('heroku:production', ['uglify']);
