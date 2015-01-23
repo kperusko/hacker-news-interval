@@ -31,5 +31,8 @@
     "url": "git://github.com/kperusko/hackerati-news-interval-service"
   },
   "version": "0.1.0",
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "grunt-jsbeautifier": "^0.2.7"
+  }
 }
