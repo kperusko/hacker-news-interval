@@ -26,9 +26,12 @@
     "passport": "^0.2.1",
     "time-grunt": "^1.0.0"
   },
+  "engines": {
+    "node": "0.10.x"
+  },
   "repository": {
     "type": "git",
-    "url": "git://github.com/kperusko/hackerati-news-interval-service"
+    "url": "git://github.com/kperusko/hacker-news-interval-service"
   },
   "version": "0.1.0",
   "license": "MIT",
