@@ -2,7 +2,7 @@
 
 var paths = {
   js: ['*.js', 'test/**/*.js', '!test/coverage/**', '**/*.js',
-    '!node_modules/**', 'public/**/.js', '!public/lib/**'
+    '!node_modules/**', '!public/lib/**'
   ],
 };
 

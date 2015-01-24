@@ -5,8 +5,8 @@ var express = require('express'),
   bodyParser = require('body-parser'),
   compression = require('compression'),
   helmet = require('helmet'),
-  config = require('./config'),
-  mongoose = require('mongoose');
+  mongoose = require('mongoose'),
+  config = require('./config/config');
 
 // Connect to MongoDB
 mongoose.connect(config.db.uri);
@@ -46,7 +46,7 @@ app.use(helmet.ienoopen());
 app.disable('x-powered-by');
 
 // Routes ----------------------------------------------------------------------
-var apiRoutes = require('./routes/api')(express);
+var apiRoutes = require('./app/routes/api')(express);
 app.use('/api', apiRoutes);
 
 // Error handlers --------------------------------------------------------------
