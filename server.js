@@ -8,10 +8,15 @@ var express = require('express'),
   config = require('./config'),
   mongoose = require('mongoose');
 
+// Connect to MongoDB
 mongoose.connect(config.db.uri);
+// Log connection errors
+mongoose.connection.on('error', console.error.bind(console,
+  'connection error:'));
 
 var app = express();
 
+// Configuration --------------------------------------------------------------
 // Enable compresssion 
 app.use(compression());
 
@@ -40,12 +45,11 @@ app.use(helmet.ienoopen());
 // Skip middleware to disable X-Powered-By header
 app.disable('x-powered-by');
 
+// Routes ----------------------------------------------------------------------
 var apiRoutes = require('./routes/api')(express);
 app.use('/api', apiRoutes);
 
-// connection errors
-mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
-
+// Error handlers --------------------------------------------------------------
 // 404 - catch and forward to error handler
 app.use(function (req, res, next) {
   var err = new Error('Not Found');
@@ -72,5 +76,31 @@ app.use(function (err, req, res, next) {
   });
 });
 
-app.listen(config.port);
-console.log('Listening on port ' + config.port);
+// Start server ----------------------------------------------------------------
+var server = app.listen(config.port);
+
+server.on('listening', function () {
+  console.log('Listening on port' + server.address());
+});
+
+server.on('error', function (error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
+
+  var port = 'Port ' + config.port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+  case 'EACCES':
+    console.error(port + ' requires elevated privileges');
+    process.exit(1);
+    break;
+  case 'EADDRINUSE':
+    console.error(port + ' is already in use');
+    process.exit(1);
+    break;
+  default:
+    throw error;
+  }
+});
