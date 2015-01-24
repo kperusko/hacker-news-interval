@@ -4,6 +4,7 @@ var express = require('express'),
   morgan = require('morgan'),
   bodyParser = require('body-parser'),
   compression = require('compression'),
+  helmet = require('helmet'),
   config = require('./config'),
   mongoose = require('mongoose');
 
@@ -22,13 +23,16 @@ app.use(bodyParser.urlencoded({
   extended: true
 }));
 
-// handle CORS requests
-app.use(function (req, res, next) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
-  res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With, content-type, Authorization');
-  next();
-});
+// Prevent clickjacking
+app.use(helmet.xframe());
+// Basic XSS protection
+app.use(helmet.xssFilter());
+// Keep clients from sniffing the MIME type
+app.use(helmet.nosniff());
+// Restrict IE from executing downloads
+app.use(helmet.ienoopen());
+// Skip middleware to disable X-Powered-By header
+app.disable('x-powered-by');
 
 var apiRoutes = require('./routes/api')(express);
 app.use('/api', apiRoutes);
