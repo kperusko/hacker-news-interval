@@ -8,15 +8,21 @@ var express = require('express'),
   config = require('./config'),
   mongoose = require('mongoose');
 
-mongoose.connect(config.db);
+mongoose.connect(config.db.uri);
 
 var app = express();
 
 // Enable compresssion 
 app.use(compression());
 
-// Enable request logging
-app.use(morgan('dev'));
+// Enable short colored output for development
+if (app.get('env') === 'development') {
+  app.use(morgan('dev'));
+} else {
+  app.use(morgan(config.log.format, {
+    stream: __dirname + '/../morgan.log'
+  }));
+}
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
@@ -62,10 +68,9 @@ if (app.get('env') === 'development') {
 // 500 - production error handler; no stacktrace
 app.use(function (err, req, res, next) {
   res.status(err.status || 500).send({
-    message: err.message,
-    error: {}
+    message: err.message
   });
 });
 
-app.listen(config.http.port);
-console.log('Listening on port ' + config.http.port);
+app.listen(config.port);
+console.log('Listening on port ' + config.port);
