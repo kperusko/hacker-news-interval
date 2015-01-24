@@ -1,20 +1,26 @@
 'use strict';
 
-var express = require('express');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
-var config = require('./config');
-var mongoose = require('mongoose');
+var express = require('express'),
+  morgan = require('morgan'),
+  bodyParser = require('body-parser'),
+  compression = require('compression'),
+  config = require('./config'),
+  mongoose = require('mongoose');
 
 mongoose.connect(config.db);
 
 var app = express();
 
+// Enable compresssion 
+app.use(compression());
+
+// Enable request logging
+app.use(morgan('dev'));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
 }));
-app.use(logger('dev'));
 
 // handle CORS requests
 app.use(function (req, res, next) {
