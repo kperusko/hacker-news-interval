@@ -80,7 +80,7 @@ app.use(function (err, req, res, next) {
 var server = app.listen(config.port);
 
 server.on('listening', function () {
-  console.log('Listening on port' + server.address());
+  console.log('Listening on port ' + server.address().port);
 });
 
 server.on('error', function (error) {
