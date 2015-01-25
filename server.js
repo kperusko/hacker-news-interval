@@ -1,10 +1,12 @@
 'use strict';
 
 var express = require('express'),
+  path = require('path'),
   morgan = require('morgan'),
   bodyParser = require('body-parser'),
   compression = require('compression'),
   helmet = require('helmet'),
+  consolidate = require('consolidate'),
   mongoose = require('mongoose'),
   config = require('./config/config');
 
@@ -34,6 +36,12 @@ if (app.get('env') === 'development') {
   }));
 }
 
+// Set swig as the template engine
+app.engine('html', consolidate.swig);
+// Set views path and view engine
+app.set('view engine', 'html');
+app.set('views', './app/views');
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: true
@@ -51,6 +59,13 @@ app.use(helmet.ienoopen());
 app.disable('x-powered-by');
 
 // Routes ----------------------------------------------------------------------
+// Setting the app router and static folder
+app.use(express.static(path.resolve('./public')));
+
+app.get('/', function (req, res) {
+  res.render('index', {});
+});
+
 var apiRoutes = require('./app/routes/api')(express);
 app.use('/api', apiRoutes);
 
