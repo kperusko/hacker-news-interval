@@ -8,11 +8,16 @@ var express = require('express'),
   mongoose = require('mongoose'),
   config = require('./config/config');
 
-// Connect to MongoDB
-mongoose.connect(config.db.uri);
+// MongoDB connection ---------------------------------------------------------
+mongoose.connect(config.db.uri, config.db.options);
+
+mongoose.connection.on('connected', function () {
+  console.log('Connected to MongoDB');
+});
+
 // Log connection errors
 mongoose.connection.on('error', console.error.bind(console,
-  'connection error:'));
+  'MongoDB connection error:'));
 
 var app = express();
 
