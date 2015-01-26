@@ -23,6 +23,11 @@ mongoose.connection.on('error', console.error.bind(console,
 
 var app = express();
 
+// Local app vars
+app.locals.title = config.app.title;
+app.locals.description = config.app.description;
+app.locals.keywords = config.app.keywords;
+
 // Configuration --------------------------------------------------------------
 // Enable compresssion 
 app.use(compression());

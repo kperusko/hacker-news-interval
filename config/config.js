@@ -1,4 +1,9 @@
 module.exports = {
+  app: {
+	title: 'Hacker News Interval',
+	description: 'Unofficial news from Hacker News gathered on an interval',
+	keywords: 'hacker news, interval'
+  },
   db: {
     uri: process.env.MONGOHQ_URL ||
       'mongodb://localhost:27017/news-interval',
