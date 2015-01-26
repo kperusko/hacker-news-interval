@@ -1,10 +1,10 @@
 'use strict';
 
-var story = require('./story');
-var snapshot = require('./snapshot');
-
 module.exports = function (express) {
   var router = express.Router();
+
+  var story = require('../controllers/story');
+  var snapshot = require('../controllers/snapshot');
 
   // STORY
   router.route('/stories')
