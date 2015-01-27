@@ -2,8 +2,9 @@
 
 var Snapshot = require('../models/snapshot');
 
+// Get all snapshots sorted by _id
 module.exports.getSnapshots = function (req, res, next) {
-  Snapshot.find(function (err, snapshots) {
+  Snapshot.find().sort('-id').exec(function (err, snapshots) {
     if (err) return next(err);
 
     res.json(snapshots);
