@@ -1,33 +1,38 @@
-angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable']).controller(
-  'HomeCtrl',
-  function ($scope, $http, $filter, ngTableParams) {
-    var normalizeDate = function (date) {
-      date = new Date(date);
-      return date.toLocaleTimeString();
-    };
+angular.module('homeController',
+			   ['chart.js', 'ui.bootstrap', 'ngTable', 'intervalService'
+]).controller('HomeCtrl', 
+  function ($scope, $http, $filter, Snapshot, ngTableParams) {
+	var vm = this;
 
+	// Chart data
     $scope.chart = {
-      data: [],
-      labels: [],
+      data: {
+		  labels: [],
+		  values: []
+	  },
+	  // Chart settings
       series: ['New stories'],
       options: {
         bezierCurve: false,
-        animationSteps: 10,
-        //        responsive: true,
+        animationSteps: 10
       },
+	  // Pagination settings
       currentPage: 1,
       totalItems: 0,
       itemsPerPage: 8
     };
-    var chartLabels = [],
-      chartData = [];
 
-    $http.get('api/snapshots').success(function (data) {
-      data.forEach(function (snapshot) {
-        chartLabels.push(normalizeDate(snapshot.time));
-        chartData.push(snapshot.new_items);
-      });
-      $scope.chart.totalItems = chartData.length;
+	vm.allSnapshots = {
+		labels: [],
+		values: []
+	};
+
+    // Load data for chart
+    Snapshot.getSnapshots()
+	  .then(function (snapshots) {
+	  vm.allSnapshots = snapshots;
+      // Set the total items for the paginator
+      $scope.chart.totalItems = vm.allSnapshots.values.length;
 
       // Go to last page 
       // This triggers the chart reloading and displaying data
@@ -35,24 +40,29 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable']).contro
         Math.ceil($scope.chart.totalItems / $scope.chart.itemsPerPage);
     });
 
+	// React to paginator prev/next buttons
     $scope.$watch('chart.currentPage', function () {
       var begin = (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage),
         end = begin + $scope.chart.itemsPerPage;
 
-      $scope.chart.data = [chartData.slice(begin, end)];
-      $scope.chart.labels = chartLabels.slice(begin, end);
+	  // Get the chart data for the current page
+      $scope.chart.data.values = [vm.allSnapshots.values.slice(begin, end)];
+      $scope.chart.data.labels = vm.allSnapshots.labels.slice(begin, end);
     });
 
     var stories = [{
       title: 'Big story',
       rank: 1,
-      score: 50
+      score: 50,
+      url: 'http://example.com'
     }, {
-      title: 'Huge',
+      title: 'HUGE story',
       rank: 2,
-      score: 43
+      score: 43,
+      url: 'http://google.com'
     }];
 
+	// Set up table options
     $scope.tableParams = new ngTableParams({
       page: 1, // show first page
       count: 50, // count per page
@@ -73,5 +83,4 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable']).contro
           .count(), params.page() * params.count()));
       }
     });
-
   });

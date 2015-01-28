@@ -11,8 +11,7 @@
 		<div class="col-sm-10">
 			<canvas id="line" class="chart chart-line" 
 					series="chart.series" options="chart.options"
-					data="chart.data" 
-					labels="chart.labels"
+					data="chart.data.values" labels="chart.data.labels"
 			</canvas>
 		</div>
 		<div class="col-sm-1"></div>
@@ -31,13 +30,13 @@
 	<div class="row">
 		<table ng-table="tableParams" class="table">
 			<tr ng-repeat="story in $data">
-				<td data-title="'Rank'" sortable="'rank'" class="col-xs-2">
+				<td data-title="'Rank'" sortable="'rank'" class="col-xs-1">
 					{{story.rank}}
 				</td>
-				<td data-title="'Title'" sortable="'title'" class="col-xs-8">
-					{{story.title}}
+				<td data-title="'Title'" sortable="'title'" class="col-xs-10">
+					<a ng-href="{{story.url}}">{{story.title}}</a>
 				</td>
-				<td data-title="'Score'" sortable="'score'" class="col-xs-2">
+				<td data-title="'Score'" sortable="'score'" class="col-xs-1">
 					{{story.score}}
 				</td>
 			</tr>
