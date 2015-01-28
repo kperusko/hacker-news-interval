@@ -1,9 +1,20 @@
 angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
   'intervalService'
 ]).controller('HomeCtrl', ['$scope', '$http', '$filter',
-  'Snapshot', 'ngTableParams',
-  function ($scope, $http, $filter, Snapshot, ngTableParams) {
+  'Snapshot', 'Story', 'ngTableParams',
+  function ($scope, $http, $filter, Snapshot, Story, ngTableParams) {
     var vm = this;
+
+    // stores all data for chart
+    // snapshots that are later sliced for pagination
+    vm.allSnapshots = {
+      ids: [], // snapshot id
+      labels: [], // snapshot time
+      values: []
+    };
+
+    // currently selected snapshot Id
+    $scope.currentSnapshotId = null;
 
     // Chart data and settings
     $scope.chart = {
@@ -23,23 +34,7 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       itemsPerPage: 8
     };
 
-    // stores all snapshots that are later
-    // sliced for pagination
-    vm.allSnapshots = {
-      ids: [], // snapshot id
-      labels: [], // snapshot time
-      values: []
-    };
-
-    $scope.chart.onClick = function (points, evt) {
-      // Get the snapshotId by finding label idx 
-      var idx = $scope.chart.data.labels.indexOf(points[0].label);
-      var snapshotIdx = idx +
-        (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage);
-      var snapshotId = vm.allSnapshots.ids[snapshotIdx];
-    };
-
-    // Load data for chart
+    // Load all data for chart only once
     Snapshot.getSnapshots()
       .then(function (snapshots) {
         vm.allSnapshots = snapshots;
@@ -53,6 +48,9 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
         // This triggers the chart reloading and displaying data
         $scope.chart.currentPage =
           Math.ceil($scope.chart.totalItems / $scope.chart.itemsPerPage);
+
+        $scope.currentSnapshotId =
+          vm.allSnapshots.ids[vm.allSnapshots.ids.length - 1];
       });
 
     // Watch for paginator prev/next actions
@@ -70,17 +68,22 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
         });
     });
 
-    vm.stories = [{
-      title: 'Big story',
-      rank: 1,
-      score: 50,
-      url: 'http://example.com'
-    }, {
-      title: 'HUGE story',
-      rank: 2,
-      score: 43,
-      url: 'http://google.com'
-    }];
+    $scope.$watch('currentSnapshotId', function () {
+      if ($scope.currentSnapshotId !== null) {
+        $scope.tableParams.reload();
+      }
+    });
+
+    // load saved stories for that snapshot
+    $scope.chart.onClick = function (points, evt) {
+      // Get the snapshotId by finding label idx 
+      var idx = $scope.chart.data.labels.indexOf(points[0].label);
+      var snapshotIdx = idx +
+        (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage);
+
+      // This will load stories for that snapshot
+      $scope.currentSnapshotId = vm.allSnapshots.ids[snapshotIdx];
+    };
 
     // Set up table options
     $scope.tableParams = new ngTableParams({
@@ -93,15 +96,24 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       counts: [], // hide page counts control
       total: 1, // must be lower than count to hide pagination
       getData: function ($defer, params) {
+        if ($scope.currentSnapshotId === null) {
+          $defer.resolve([], 0);
+        } else {
+          Story.getStories($scope.currentSnapshotId)
+            .then(function (stories) {
+              // use build-in angular filter
+              var orderedData = params.sorting() ?
+                $filter('orderBy')(stories, params.orderBy()) :
+                stories;
 
-        // use build-in angular filter
-        var orderedData = params.sorting() ?
-          $filter('orderBy')(vm.stories, params.orderBy()) :
-          vm.stories;
-
-        $defer.resolve(orderedData.slice((params.page() - 1) *
-          params
-          .count(), params.page() * params.count()));
+              $defer.resolve(orderedData.slice((params.page() - 1) *
+                params.count(),
+                params.page() * params.count()));
+            });
+        }
+      },
+      $scope: {
+        $data: {}
       }
     });
   }
