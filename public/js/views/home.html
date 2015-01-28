@@ -27,7 +27,12 @@
 		<div class="col-sm-3"></div>
 	</div>
 
+
 	<!-- TABLE -->
+	<div class="row">
+	    <h4>Selected snapshot: {{currentSnapshotValue}}</h4>
+	</div>
+
 	<div class="row">
 		<table ng-table="tableParams" class="table">
 			<tr ng-repeat="story in $data">

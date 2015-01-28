@@ -13,8 +13,13 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       values: []
     };
 
+	// Default date format for all dates
+	vm.dateFormat = 'short';
+
     // currently selected snapshot Id
     $scope.currentSnapshotId = null;
+	// currently selected snapshot value
+	$scope.currentSnapshotValue = "";
 
     // Chart data and settings
     $scope.chart = {
@@ -53,6 +58,17 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
           vm.allSnapshots.ids[vm.allSnapshots.ids.length - 1];
       });
 
+    // load saved stories for that snapshot
+    $scope.chart.onClick = function (points, evt) {
+      // Get the snapshotId by finding label idx 
+      var idx = $scope.chart.data.labels.indexOf(points[0].label);
+      var snapshotIdx = idx +
+        (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage);
+
+      // This will load stories for that snapshot
+      $scope.currentSnapshotId = vm.allSnapshots.ids[snapshotIdx];
+    };
+
     // Watch for paginator prev/next actions
     $scope.$watch('chart.currentPage', function () {
       var begin = (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage),
@@ -64,26 +80,19 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       // Get the chart labels and format the date 
       $scope.chart.data.labels =
         vm.allSnapshots.labels.slice(begin, end).map(function (date) {
-          return $filter('date')(date, 'short');
+          return $filter('date')(date, vm.dateFormat);
         });
     });
 
     $scope.$watch('currentSnapshotId', function () {
       if ($scope.currentSnapshotId !== null) {
+		var idx = vm.allSnapshots.ids.indexOf($scope.currentSnapshotId);
+		$scope.currentSnapshotValue = 
+			  $filter('date')(vm.allSnapshots.labels[idx], vm.dateFormat);
+		// Reload data for selected snapshot
         $scope.tableParams.reload();
       }
     });
-
-    // load saved stories for that snapshot
-    $scope.chart.onClick = function (points, evt) {
-      // Get the snapshotId by finding label idx 
-      var idx = $scope.chart.data.labels.indexOf(points[0].label);
-      var snapshotIdx = idx +
-        (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage);
-
-      // This will load stories for that snapshot
-      $scope.currentSnapshotId = vm.allSnapshots.ids[snapshotIdx];
-    };
 
     // Set up table options
     $scope.tableParams = new ngTableParams({
