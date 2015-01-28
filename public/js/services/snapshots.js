@@ -5,20 +5,17 @@ intervalServices.factory('Snapshot', ['$http', '$q',
     var service = {};
 
     service.getSnapshots = function () {
-      function normalizeDate(date) {
-        date = new Date(date);
-        return date.toLocaleTimeString();
-      }
-
       var deferred = $q.defer();
       $http.get('api/snapshots')
         .success(function (data) {
           var snapshots = {
+            ids: [],
             labels: [],
             values: []
           };
 
           data.forEach(function (snapshot) {
+            snapshots.ids.push(snapshot._id);
             snapshots.labels.push(new Date(snapshot.time));
             snapshots.values.push(snapshot.new_items);
           });

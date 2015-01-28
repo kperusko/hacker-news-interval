@@ -1,7 +1,7 @@
 angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
   'intervalService'
-]).controller('HomeCtrl', ['$scope', '$http', '$filter', 
-						   'Snapshot', 'ngTableParams',
+]).controller('HomeCtrl', ['$scope', '$http', '$filter',
+  'Snapshot', 'ngTableParams',
   function ($scope, $http, $filter, Snapshot, ngTableParams) {
     var vm = this;
 
@@ -23,11 +23,20 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       itemsPerPage: 8
     };
 
-	// stores all snapshots that are later
-	// sliced for pagination
+    // stores all snapshots that are later
+    // sliced for pagination
     vm.allSnapshots = {
-      labels: [],
+      ids: [], // snapshot id
+      labels: [], // snapshot time
       values: []
+    };
+
+    $scope.chart.onClick = function (points, evt) {
+      // Get the snapshotId by finding label idx 
+      var idx = $scope.chart.data.labels.indexOf(points[0].label);
+      var snapshotIdx = idx +
+        (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage);
+      var snapshotId = vm.allSnapshots.ids[snapshotIdx];
     };
 
     // Load data for chart
@@ -35,7 +44,10 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       .then(function (snapshots) {
         vm.allSnapshots = snapshots;
         // Set the total items for the paginator
-        $scope.chart.totalItems = vm.allSnapshots.values.length;
+        // totalItems must be >= num of data points
+        // so that the last page is correctly displayed
+        var itemNum = vm.allSnapshots.values.length;
+        $scope.chart.totalItems = itemNum + (itemNum % $scope.chart.itemsPerPage);
 
         // Go to last page 
         // This triggers the chart reloading and displaying data
@@ -49,16 +61,16 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
         end = begin + $scope.chart.itemsPerPage;
 
       // Get the chart data for the current page
-      $scope.chart.data.values = 
-		[vm.allSnapshots.values.slice(begin, end)];
-	  // Get the chart labels and format the date 
-      $scope.chart.data.labels = 
-		vm.allSnapshots.labels.slice(begin, end).map(function(date){
-			return $filter('date')(date, 'short');
-		});
+      $scope.chart.data.values = [vm.allSnapshots.values.slice(begin,
+        end)];
+      // Get the chart labels and format the date 
+      $scope.chart.data.labels =
+        vm.allSnapshots.labels.slice(begin, end).map(function (date) {
+          return $filter('date')(date, 'short');
+        });
     });
 
-    var stories = [{
+    vm.stories = [{
       title: 'Big story',
       rank: 1,
       score: 50,
@@ -84,10 +96,11 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
 
         // use build-in angular filter
         var orderedData = params.sorting() ?
-          $filter('orderBy')(stories, params.orderBy()) :
-          stories;
+          $filter('orderBy')(vm.stories, params.orderBy()) :
+          vm.stories;
 
-        $defer.resolve(orderedData.slice((params.page() - 1) * params
+        $defer.resolve(orderedData.slice((params.page() - 1) *
+          params
           .count(), params.page() * params.count()));
       }
     });
