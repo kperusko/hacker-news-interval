@@ -38,6 +38,9 @@
     "type": "git",
     "url": "git://github.com/kperusko/hacker-news-interval"
   },
+  "scripts": {
+    "postinstall": "bower install"
+  },
   "version": "0.1.0",
   "license": "MIT",
   "devDependencies": {
