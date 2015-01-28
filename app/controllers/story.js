@@ -2,11 +2,15 @@ var Story = require('../models/story');
 var Score = require('../models/score');
 
 module.exports.getStories = function (req, res, next) {
-  Story.find(function (err, stories) {
-    if (err) return next(err);
+  Story.find({
+      'scores.snapshot': req.params.snapshot_id
+    },
+    null,
+    function (err, stories) {
+      if (err) return next(err);
 
-    res.json(stories);
-  });
+      res.json(stories);
+    });
 };
 
 module.exports.getStoryIds = function (req, res, next) {

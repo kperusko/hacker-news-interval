@@ -7,7 +7,7 @@ module.exports = function (express) {
   var snapshot = require('../controllers/snapshot');
 
   // STORY
-  router.route('/stories')
+  router.route('/stories/:snapshot_id([0-9]+)')
     .get(story.getStories);
 
   router.route('/story/:story_id([0-9]+)')
