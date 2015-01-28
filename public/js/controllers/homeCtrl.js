@@ -1,6 +1,7 @@
 angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
   'intervalService'
-]).controller('HomeCtrl', ['$scope', '$http', '$filter', 'Snapshot', 'ngTableParams',
+]).controller('HomeCtrl', ['$scope', '$http', '$filter', 
+						   'Snapshot', 'ngTableParams',
   function ($scope, $http, $filter, Snapshot, ngTableParams) {
     var vm = this;
 
@@ -49,9 +50,12 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
 
       // Get the chart data for the current page
       $scope.chart.data.values = 
-			[vm.allSnapshots.values.slice(begin, end)];
+		[vm.allSnapshots.values.slice(begin, end)];
+	  // Get the chart labels and format the date 
       $scope.chart.data.labels = 
-			vm.allSnapshots.labels.slice(begin, end);
+		vm.allSnapshots.labels.slice(begin, end).map(function(date){
+			return $filter('date')(date, 'short');
+		});
     });
 
     var stories = [{

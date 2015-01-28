@@ -19,7 +19,7 @@ intervalServices.factory('Snapshot', ['$http', '$q',
           };
 
           data.forEach(function (snapshot) {
-            snapshots.labels.push(normalizeDate(snapshot.time));
+            snapshots.labels.push(new Date(snapshot.time));
             snapshots.values.push(snapshot.new_items);
           });
           deferred.resolve(snapshots);
