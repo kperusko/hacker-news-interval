@@ -13,13 +13,13 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       values: []
     };
 
-	// Default date format for all dates
-	vm.dateFormat = 'short';
+    // Default date format for all dates
+    vm.dateFormat = 'short';
 
     // currently selected snapshot Id
     $scope.currentSnapshotId = null;
-	// currently selected snapshot value
-	$scope.currentSnapshotValue = "";
+    // currently selected snapshot value
+    $scope.currentSnapshotValue = '';
 
     // Chart data and settings
     $scope.chart = {
@@ -37,6 +37,17 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       currentPage: 1,
       totalItems: 0,
       itemsPerPage: 8
+    };
+
+    // load saved stories for that snapshot
+    $scope.chart.onClick = function (points, evt) {
+      // Get the snapshotId by finding label idx 
+      var idx = $scope.chart.data.labels.indexOf(points[0].label);
+      var snapshotIdx = idx +
+        (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage);
+
+      // This will load stories for that snapshot
+      $scope.currentSnapshotId = vm.allSnapshots.ids[snapshotIdx];
     };
 
     // Load all data for chart only once
@@ -58,16 +69,39 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
           vm.allSnapshots.ids[vm.allSnapshots.ids.length - 1];
       });
 
-    // load saved stories for that snapshot
-    $scope.chart.onClick = function (points, evt) {
-      // Get the snapshotId by finding label idx 
-      var idx = $scope.chart.data.labels.indexOf(points[0].label);
-      var snapshotIdx = idx +
-        (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage);
+    vm.getTableData = function ($defer, params) {
+      if ($scope.currentSnapshotId === null) {
+        $defer.resolve([], 0);
+      } else {
+        Story.getStories($scope.currentSnapshotId)
+          .then(function (stories) {
+            // use build-in angular filter
+            var orderedData = params.sorting() ?
+              $filter('orderBy')(stories, params.orderBy()) :
+              stories;
 
-      // This will load stories for that snapshot
-      $scope.currentSnapshotId = vm.allSnapshots.ids[snapshotIdx];
+            $defer.resolve(orderedData.slice((params.page() - 1) *
+              params.count(),
+              params.page() * params.count()));
+          });
+      }
     };
+
+    // Set up table options
+    $scope.tableParams = new ngTableParams({
+      page: 1, // show first page
+      count: 50, // count per page
+      sorting: {
+        rank: 'asc' // initial sorting
+      }
+    }, {
+      counts: [], // hide page counts control
+      total: 1, // must be lower than count to hide pagination
+      getData: vm.getTableData,
+      $scope: {
+        $data: {}
+      }
+    });
 
     // Watch for paginator prev/next actions
     $scope.$watch('chart.currentPage', function () {
@@ -84,45 +118,14 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
         });
     });
 
+    // Watch for changing snapshot ids and reload table data
     $scope.$watch('currentSnapshotId', function () {
       if ($scope.currentSnapshotId !== null) {
-		var idx = vm.allSnapshots.ids.indexOf($scope.currentSnapshotId);
-		$scope.currentSnapshotValue = 
-			  $filter('date')(vm.allSnapshots.labels[idx], vm.dateFormat);
-		// Reload data for selected snapshot
+        var idx = vm.allSnapshots.ids.indexOf($scope.currentSnapshotId);
+        $scope.currentSnapshotValue =
+          $filter('date')(vm.allSnapshots.labels[idx], vm.dateFormat);
+        // Reload data for selected snapshot
         $scope.tableParams.reload();
-      }
-    });
-
-    // Set up table options
-    $scope.tableParams = new ngTableParams({
-      page: 1, // show first page
-      count: 50, // count per page
-      sorting: {
-        rank: 'asc' // initial sorting
-      }
-    }, {
-      counts: [], // hide page counts control
-      total: 1, // must be lower than count to hide pagination
-      getData: function ($defer, params) {
-        if ($scope.currentSnapshotId === null) {
-          $defer.resolve([], 0);
-        } else {
-          Story.getStories($scope.currentSnapshotId)
-            .then(function (stories) {
-              // use build-in angular filter
-              var orderedData = params.sorting() ?
-                $filter('orderBy')(stories, params.orderBy()) :
-                stories;
-
-              $defer.resolve(orderedData.slice((params.page() - 1) *
-                params.count(),
-                params.page() * params.count()));
-            });
-        }
-      },
-      $scope: {
-        $data: {}
       }
     });
   }
