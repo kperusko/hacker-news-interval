@@ -5,23 +5,43 @@
 	</div>
 </div>
 <div>
+	<!-- Chart -->
 	<div class="row">
-		<div class="col-xs-3"></div>
-		<div class="col-xs-6">
+		<div class="col-sm-1"></div>
+		<div class="col-sm-10">
 			<canvas id="line" class="chart chart-line" 
 					series="chart.series" options="chart.options"
 					data="chart.data" 
 					labels="chart.labels"
 			</canvas>
 		</div>
-		<div class="col-xs-3"></div>
+		<div class="col-sm-1"></div>
 	</div>
+
+	<!-- Chart paginator -->
 	<div class="row">
-		<div class="col-xs-3"></div>
-		<div class="col-xs-6">
+		<div class="col-sm-3"></div>
+		<div class="col-sm-6">
 			<pager total-items="chart.totalItems" ng-model="chart.currentPage" align="false"></pager>
 		</div>
-		<div class="col-xs-3"></div>
+		<div class="col-sm-3"></div>
+	</div>
+
+	<!-- TABLE -->
+	<div class="row">
+		<table ng-table="tableParams" class="table">
+			<tr ng-repeat="story in $data">
+				<td data-title="'Rank'" sortable="'rank'" class="col-xs-2">
+					{{story.rank}}
+				</td>
+				<td data-title="'Title'" sortable="'title'" class="col-xs-8">
+					{{story.title}}
+				</td>
+				<td data-title="'Score'" sortable="'score'" class="col-xs-2">
+					{{story.score}}
+				</td>
+			</tr>
+		</table>
 	</div>
 </div>
 
