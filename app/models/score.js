@@ -10,7 +10,7 @@ var Score = new mongoose.Schema({
   rank: {
     type: Number,
     required: true
-  }, // represenets the ranking of the post
+  }, // represents the ranking of the post
   snapshot: {
     type: Number,
     ref: 'Snapshot',

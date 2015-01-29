@@ -4,6 +4,12 @@ intervalServices.factory('Story', ['$http', '$q',
   function ($http, $q) {
     var service = {};
 
+    /**
+     * Get stories for that snapshot
+     * Score/rank for the story will be set to the
+     * score and rank from the Score object
+     * created for that snapshot
+     */
     service.getStories = function (snapshotId) {
       var deferred = $q.defer();
 
@@ -12,7 +18,6 @@ intervalServices.factory('Story', ['$http', '$q',
           // Format story result so that we get only
           // fields that we're displaying
           var stories = data.map(function (story) {
-            // Find score for that that snapshot
             var result = {
               title: story.title,
               rank: 0,
@@ -20,6 +25,8 @@ intervalServices.factory('Story', ['$http', '$q',
               url: story.url
             };
 
+            // Find Score for provided snapshotId
+            // and set rank/score accordingly
             for (var idx = 0; idx < story.scores.length; idx++) {
               if (story.scores[idx].snapshot === snapshotId) {
                 result.rank = story.scores[idx].rank;

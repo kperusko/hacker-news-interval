@@ -4,6 +4,7 @@ intervalServices.factory('Snapshot', ['$http', '$q',
   function ($http, $q) {
     var service = {};
 
+    // Get all snapshots
     service.getSnapshots = function () {
       var deferred = $q.defer();
       $http.get('api/snapshots')
@@ -14,6 +15,7 @@ intervalServices.factory('Snapshot', ['$http', '$q',
             values: []
           };
 
+          // Transform the snapshots to more suitable format
           data.forEach(function (snapshot) {
             snapshots.ids.push(snapshot._id);
             snapshots.labels.push(new Date(snapshot.time));

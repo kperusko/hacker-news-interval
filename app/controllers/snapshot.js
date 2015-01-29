@@ -11,6 +11,7 @@ module.exports.getSnapshots = function (req, res, next) {
   });
 };
 
+// Create a snapshot
 module.exports.addSnapshot = function (req, res, next) {
   var snapshot = new Snapshot();
 
@@ -24,6 +25,7 @@ module.exports.addSnapshot = function (req, res, next) {
   });
 };
 
+// Get a single snapshot
 module.exports.getSnapshot = function (req, res, next) {
   Snapshot.findOne({
     _id: req.params.snapshot_id
@@ -35,6 +37,7 @@ module.exports.getSnapshot = function (req, res, next) {
   });
 };
 
+// Update snapshot
 module.exports.updateSnapshot = function (req, res, next) {
   Snapshot.findById(req.params.snapshot_id, function (err, snapshot) {
     if (err) return next(err);

@@ -27,7 +27,6 @@
     "mongoose-auto-increment": "^3.2.0",
     "mongoose-validators": "^0.1.0",
     "morgan": "^1.5.1",
-    "passport": "^0.2.1",
     "swig": "^1.4.2",
     "time-grunt": "^1.0.0"
   },
