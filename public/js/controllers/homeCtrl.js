@@ -16,6 +16,8 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
     // Default date format for all dates
     vm.dateFormat = 'short';
 
+	vm.defaultItemsPerPage = 8;
+
     // currently selected snapshot Id
     $scope.currentSnapshotId = null;
     // currently selected snapshot value
@@ -36,19 +38,35 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       // Pagination settings
       currentPage: 1,
       totalItems: 0,
-      itemsPerPage: 8
+      itemsPerPage: vm.defaultItemsPerPage
     };
 
     // load saved stories for that snapshot
     $scope.chart.onClick = function (points, evt) {
+	  if (points.length <= 0) return;
       // Get the snapshotId by finding label idx 
       var idx = $scope.chart.data.labels.indexOf(points[0].label);
-      var snapshotIdx = idx +
-        (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage);
+
+	  // Calculate offset for the current page
+	  var missingItems = vm.getFullPageMissingItems();
+      var beginIdx = (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage) - missingItems;
+	  if (beginIdx < 0) beginIdx = 0;
+
+      var snapshotIdx = idx + beginIdx;
 
       // This will load stories for that snapshot
       $scope.currentSnapshotId = vm.allSnapshots.ids[snapshotIdx];
     };
+
+	// Get number of items that are missing for full page
+	vm.getFullPageMissingItems = function() {
+	    var itemNum = vm.allSnapshots.values.length; 
+        var missingItems = vm.defaultItemsPerPage - (itemNum % vm.defaultItemsPerPage);
+		if (missingItems === vm.defaultItemsPerPage) {
+		  missingItems = 0;
+		}
+		return missingItems;
+	};
 
     // Load all data for chart only once
     Snapshot.getSnapshots()
@@ -56,9 +74,17 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
         vm.allSnapshots = snapshots;
         // Set the total items for the paginator
         // totalItems must be >= num of data points
-        // so that the last page is correctly displayed
-        var itemNum = vm.allSnapshots.values.length;
-        $scope.chart.totalItems = itemNum + (itemNum % $scope.chart.itemsPerPage);
+		var itemNum = vm.allSnapshots.values.length,
+		  missingItems = vm.getFullPageMissingItems(); 
+		
+		if (missingItems === 0) { // not 1
+			// We have data to display full last page
+			$scope.chart.itemsPerPage = vm.defaultItemsPerPage;
+			$scope.chart.totalItems = itemNum;
+		} else {
+			$scope.chart.itemsPerPage = vm.defaultItemsPerPage;
+			$scope.chart.totalItems = itemNum + missingItems;
+		}
 
         // Go to last page 
         // This triggers the chart reloading and displaying data
@@ -105,8 +131,11 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
 
     // Watch for paginator prev/next actions
     $scope.$watch('chart.currentPage', function () {
-      var begin = (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage),
-        end = begin + $scope.chart.itemsPerPage;
+	  var missingItems = vm.getFullPageMissingItems();
+
+      var begin = (($scope.chart.currentPage - 1) * $scope.chart.itemsPerPage) - missingItems;
+	  if (begin < 0) begin = 0;
+	  var end = begin + $scope.chart.itemsPerPage;
 
       // Get the chart data for the current page
       $scope.chart.data.values = [vm.allSnapshots.values.slice(begin,
