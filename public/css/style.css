@@ -1,3 +1,23 @@
-h4 {
-	margin-bottom: 20px;
+h1 {
+	margin-top: 0px;
+}
+
+.snapshot-label {
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+.page-header {
+	margin-bottom: 40px;
+}
+
+/* Fix the chart height so it cant grow when reloading */
+.chart-container {
+	height: 300px;
+}
+
+/* Chart takes all container height and label is clipped
+ so move the pager down */
+.pager {
+	margin-top: 50px;
 }

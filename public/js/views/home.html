@@ -7,15 +7,15 @@
 <div>
 	<!-- Chart -->
 	<div class="row">
-		<div class="col-sm-1"></div>
-		<div class="col-sm-10">
+		<div class="col-md-2"></div>
+		<div class="col-xs-12 col-md-8">
 			<canvas id="line" class="chart chart-line" legend="true"
 					series="chart.series" options="chart.options"
 					data="chart.data.values" labels="chart.data.labels"
 					click="chart.onClick"
 			</canvas>
 		</div>
-		<div class="col-sm-1"></div>
+		<div class="col-md-2"></div>
 	</div>
 
 	<!-- Chart paginator -->
@@ -29,11 +29,14 @@
 
 
 	<!-- Table -->
-	<div class="row">
-	    <h4>Selected snapshot: {{currentSnapshotValue}}</h4>
+	<div class="row text-center">
+	    <div class="col-xs-12 snapshot-label">
+			<h4>Selected snapshot: {{currentSnapshotValue}}</h4>
+		</div>
 	</div>
 
 	<div class="row">
+		<div class="col-xs-12">
 		<table ng-table="tableParams" class="table">
 			<tr ng-repeat="story in $data">
 				<td data-title="'Rank'" sortable="'rank'" class="col-xs-1">
@@ -47,5 +50,6 @@
 				</td>
 			</tr>
 		</table>
+		</div>
 	</div>
 </div>
