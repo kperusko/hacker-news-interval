@@ -22,7 +22,8 @@ intervalServices.factory('Story', ['$http', '$q',
               title: story.title,
               rank: 0,
               score: 0,
-              url: story.url
+              url: story.url,
+              isNew: false
             };
 
             // Find Score for provided snapshotId
@@ -31,6 +32,7 @@ intervalServices.factory('Story', ['$http', '$q',
               if (story.scores[idx].snapshot === snapshotId) {
                 result.rank = story.scores[idx].rank;
                 result.score = story.scores[idx].score;
+                result.isNew = idx === 0;
                 break;
               }
             }

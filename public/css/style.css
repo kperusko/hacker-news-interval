@@ -1,23 +1,24 @@
-h1 {
-	margin-top: 0px;
-}
+h1 { margin-top: 0px; }
 
-.snapshot-label {
-	margin-top: 20px;
-	margin-bottom: 10px;
-}
+/* Align links and labels vertically */
+a.label-align { vertical-align: middle; }
 
-.page-header {
-	margin-bottom: 40px;
-}
+.label-new { 
+	vertical-align: middle;
+	background-color: rgba(151,187,205,1); 
+	font-size: 65%;    
+	padding-top: 2px;
+    padding-bottom: 2px; }
 
-/* Fix the chart height so it cant grow when reloading */
-.chart-container {
-	height: 300px;
-}
+.page-header { margin-bottom: 40px; }
 
 /* Chart takes all container height and label is clipped
  so move the pager down */
-.pager {
-	margin-top: 50px;
-}
+.pager { margin-top: 50px; }
+
+/* Fix the chart height so it cant grow when reloading */
+.chart-container { height: 300px; }
+
+.snapshot-title {
+	margin-top: 20px;
+	margin-bottom: 10px; }

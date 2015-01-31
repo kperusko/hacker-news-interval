@@ -30,7 +30,7 @@
 
 	<!-- Table -->
 	<div class="row text-center">
-	    <div class="col-xs-12 snapshot-label">
+	    <div class="col-xs-12 snapshot-title">
 			<h4>Selected snapshot: {{currentSnapshotValue}}</h4>
 		</div>
 	</div>
@@ -43,7 +43,8 @@
 					{{story.rank}}
 				</td>
 				<td data-title="'Title'" sortable="'title'" class="col-xs-10">
-					<a ng-href="{{story.url}}">{{story.title}}</a>
+					<a ng-href="{{story.url}}" class="label-align">{{story.title}}</a>
+					<span ng-show="story.isNew" class="label label-new">New</span>
 				</td>
 				<td data-title="'Score'" sortable="'score'" class="col-xs-1">
 					{{story.score}}
