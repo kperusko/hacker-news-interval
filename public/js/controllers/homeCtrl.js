@@ -5,6 +5,13 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
   function ($scope, $http, $filter, Snapshot, Story, ngTableParams) {
     var vm = this;
 
+    // Default date format for all dates
+    vm.dateFormat = 'short';
+    // Default number of items per page
+    vm.defaultItemsPerPage = 8;
+    // URL for hacker news comments
+    vm.baseItemUrl = "https://news.ycombinator.com/item?id=";
+
     // stores all data for chart
     // snapshots that are later sliced for pagination
     vm.allSnapshots = {
@@ -12,11 +19,6 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       labels: [], // snapshot time
       values: []
     };
-
-    // Default date format for all dates
-    vm.dateFormat = 'short';
-
-    vm.defaultItemsPerPage = 8;
 
     // currently selected snapshot Id
     $scope.currentSnapshotId = null;
@@ -168,5 +170,10 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
         $scope.tableParams.reload();
       }
     });
+
+    // 
+    $scope.commentsUrl = function (storyId) {
+      return vm.baseItemUrl + storyId;
+    };
   }
 ]);

@@ -39,14 +39,15 @@
 		<div class="col-xs-12">
 		<table ng-table="tableParams" class="table">
 			<tr ng-repeat="story in $data">
-				<td data-title="'Rank'" sortable="'rank'" class="col-xs-1">
+				<td data-title="'Rank'" sortable="'rank'" class="col-xs-1 text-center">
 					{{story.rank}}
 				</td>
-				<td data-title="'Title'" sortable="'title'" class="col-xs-10">
+				<td data-title="'Story'" sortable="'title'" class="col-xs-10">
 					<a ng-href="{{story.url}}" class="label-align">{{story.title}}</a>
 					<span ng-show="story.isNew" class="label label-new">New</span>
+					<a ng-href="{{commentsUrl(story.id)}}" class="comment">HN comments</a>
 				</td>
-				<td data-title="'Score'" sortable="'score'" class="col-xs-1">
+				<td data-title="'Score'" sortable="'score'" class="col-xs-1 text-center">
 					{{story.score}}
 				</td>
 			</tr>

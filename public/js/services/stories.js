@@ -19,6 +19,7 @@ intervalServices.factory('Story', ['$http', '$q',
           // fields that we're displaying
           var stories = data.map(function (story) {
             var result = {
+              id: story._id,
               title: story.title,
               rank: 0,
               score: 0,
