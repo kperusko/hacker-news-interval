@@ -10,7 +10,7 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
     // Default number of items per page
     vm.defaultItemsPerPage = 8;
     // URL for hacker news comments
-    vm.baseItemUrl = "https://news.ycombinator.com/item?id=";
+    vm.baseItemUrl = 'https://news.ycombinator.com/item?id=';
 
     // stores all data for chart
     // snapshots that are later sliced for pagination

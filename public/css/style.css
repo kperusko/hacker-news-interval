@@ -5,6 +5,10 @@ h1 { margin-top: 0px; }
 	vertical-align: middle; 
 	padding: 6px; }
 
+.table a:visited {
+	color: darkgray;
+}
+
 .label-new { 
 	background-color: rgba(151,187,205,1); 
 	font-size: 70%;    
@@ -25,7 +29,7 @@ h1 { margin-top: 0px; }
 	margin-bottom: 10px; }
 
 .comment {
-	color: #808080;
+	color: darkgray;
 	font-size: 80%;
 	display: table-row;
 }
