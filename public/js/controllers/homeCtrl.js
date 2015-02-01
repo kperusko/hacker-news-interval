@@ -1,5 +1,5 @@
 angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
-  'intervalService'
+  'intervalService', 'angularMoment'
 ]).controller('HomeCtrl', ['$scope', '$http', '$filter',
   'Snapshot', 'Story', 'ngTableParams',
   function ($scope, $http, $filter, Snapshot, Story, ngTableParams) {
@@ -9,8 +9,12 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
     vm.dateFormat = 'short';
     // Default number of items per page
     vm.defaultItemsPerPage = 8;
-    // URL for hacker news comments
-    vm.baseItemUrl = 'https://news.ycombinator.com/item?id=';
+    // URL for Hacker News
+    vm.baseHNUrl = 'https://news.ycombinator.com/';
+    // resource name for linking to items
+	vm.itemResource = 'item?id=';
+	// resource name for linking to users
+	vm.userResource = 'user?id=';
 
     // stores all data for chart
     // snapshots that are later sliced for pagination
@@ -171,9 +175,14 @@ angular.module('homeController', ['chart.js', 'ui.bootstrap', 'ngTable',
       }
     });
 
-    // 
-    $scope.commentsUrl = function (storyId) {
-      return vm.baseItemUrl + storyId;
+	// Create URL for the comments page on Hacker News
+    $scope.commentUrl = function (storyId) {
+      return vm.baseHNUrl + vm.itemResource + storyId;
+    };
+
+    // Create URL for the resource on Hacker News
+    $scope.byUrl = function (userId) {
+		return vm.baseHNUrl + vm.userResource + userId;
     };
   }
 ]);

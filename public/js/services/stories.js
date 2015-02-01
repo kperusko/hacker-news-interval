@@ -24,6 +24,8 @@ intervalServices.factory('Story', ['$http', '$q',
               rank: 0,
               score: 0,
               url: story.url,
+			  created: story.created,
+			  by: story.by,
               isNew: false
             };
 

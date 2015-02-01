@@ -6,7 +6,7 @@ h1 { margin-top: 0px; }
 	padding: 6px; }
 
 .table a:visited {
-	color: darkgray;
+	color: #a9a9a9;
 }
 
 .label-new { 
@@ -28,8 +28,12 @@ h1 { margin-top: 0px; }
 	margin-top: 20px;
 	margin-bottom: 10px; }
 
-.comment {
-	color: darkgray;
+.story-desc {
+	color: #a9a9a9;
 	font-size: 80%;
 	display: table-row;
+}
+
+.story-desc a {
+	color: #a9a9a9;
 }

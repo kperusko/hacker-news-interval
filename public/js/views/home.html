@@ -43,9 +43,15 @@
 					{{story.rank}}
 				</td>
 				<td data-title="'Story'" sortable="'title'" class="col-xs-10">
-					<a ng-href="{{story.url}}" class="label-align">{{story.title}}</a>
-					<span ng-show="story.isNew" class="label label-new">New</span>
-					<a ng-href="{{commentsUrl(story.id)}}" class="comment">HN comments</a>
+					<div>
+						<a ng-href="{{story.url}}" class="label-align">{{story.title}}</a>
+						<span ng-show="story.isNew" class="label label-new">New</span>
+					</div>
+					<div class="story-desc">
+						<span am-time-ago="story.created"></span>
+						by <a ng-href="{{byUrl(story.by)}}">{{story.by}}</a> | 
+						<a ng-href="{{commentUrl(story.id)}}">HN comments</a>
+					</div>
 				</td>
 				<td data-title="'Score'" sortable="'score'" class="col-xs-1 text-center">
 					{{story.score}}
