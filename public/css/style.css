@@ -37,3 +37,11 @@ h1 { margin-top: 0px; }
 .story-desc a {
 	color: #a9a9a9;
 }
+
+.score-high {
+	color: #696969;
+}
+
+.score-low {
+	color: #a9a9a9;
+}

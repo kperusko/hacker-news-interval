@@ -54,7 +54,7 @@
 					</div>
 				</td>
 				<td data-title="'Score'" sortable="'score'" class="col-xs-1 text-center">
-					{{story.score}}
+					<span ng-class="{'score-low': story.score<100, 'score-high': story.score >=100}">{{story.score}}</span>
 				</td>
 			</tr>
 		</table>
